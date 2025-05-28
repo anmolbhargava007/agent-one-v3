@@ -92,7 +92,6 @@ const Login = () => {
               className="h-16"
             />
           </div>
-          <h1 className="text-3xl font-bold">AgentOne Platform</h1>
           <p className="text-muted-foreground mt-2">
             AI Accelerator Platform for Enterprise Deployment
           </p>
