@@ -1,14 +1,15 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
-import { mockUsers } from '../data/mockData';
 import { toast } from '@/components/ui/sonner';
+import { apiClient, SigninRequest, SignupRequest } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  signup: (userData: SignupRequest) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -19,13 +20,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if we have a stored user in localStorage (for persistence)
+    // Check if we have a stored user and token in localStorage
     const storedUser = localStorage.getItem('agentone-user');
-    if (storedUser) {
+    const storedToken = localStorage.getItem('agentone-token');
+    
+    if (storedUser && storedToken) {
       try {
         setUser(JSON.parse(storedUser));
+        apiClient.setToken(storedToken);
       } catch (error) {
         localStorage.removeItem('agentone-user');
+        localStorage.removeItem('agentone-token');
+        apiClient.clearToken();
       }
     }
     setIsLoading(false);
@@ -34,35 +40,77 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // For this demo, we'll accept password "1234" and check if the email exists in our mock data
-    if (password !== "1234") {
-      toast.error('Invalid password. Please try again.');
+    try {
+      const signInData: SigninRequest = {
+        user_email: email,
+        user_pwd: password,
+      };
+      
+      const response = await apiClient.signin(signInData);
+      
+      if (response.success) {
+        // Set the token in the API client
+        if (response.accessToken) {
+          apiClient.setToken(response.accessToken);
+        }
+        
+        // Create user object from response data
+        const userData: User = {
+          id: response.data?.user_id || email,
+          name: response.data?.user_name || email.split('@')[0],
+          email: email,
+          role: 'admin', // Default role - adjust based on API response
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        
+        setUser(userData);
+        localStorage.setItem('agentone-user', JSON.stringify(userData));
+        
+        toast.success(response.msg || `Welcome back, ${userData.name}!`);
+        setIsLoading(false);
+        return true;
+      } else {
+        toast.error(response.msg || 'Login failed. Please try again.');
+        setIsLoading(false);
+        return false;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Network error. Please check your connection and try again.');
       setIsLoading(false);
       return false;
     }
+  };
+
+  const signup = async (userData: SignupRequest): Promise<boolean> => {
+    setIsLoading(true);
     
-    // Find user by email
-    const foundUser = mockUsers.find(u => u.email === email);
-    
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem('agentone-user', JSON.stringify(foundUser));
-      toast.success(`Welcome back, ${foundUser.name}!`);
+    try {
+      const response = await apiClient.signup(userData);
+      
+      if (response.success) {
+        toast.success(response.msg || 'Account created successfully! Please login.');
+        setIsLoading(false);
+        return true;
+      } else {
+        toast.error(response.msg || 'Signup failed. Please try again.');
+        setIsLoading(false);
+        return false;
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      toast.error('Network error. Please check your connection and try again.');
       setIsLoading(false);
-      return true;
+      return false;
     }
-    
-    toast.error('Invalid credentials. Please try again.');
-    setIsLoading(false);
-    return false;
   };
   
   const logout = () => {
     setUser(null);
     localStorage.removeItem('agentone-user');
+    localStorage.removeItem('agentone-token');
+    apiClient.clearToken();
     toast.info('You have been logged out');
   };
   
@@ -72,6 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated: !!user,
       isLoading,
       login,
+      signup,
       logout
     }}>
       {children}

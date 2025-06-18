@@ -1,5 +1,4 @@
 
-import { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
 import { Loader2 } from 'lucide-react';
@@ -9,17 +8,8 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading, login } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
-
-  // For demo purposes, auto-login if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      // This is just for demonstration - in a real app, you would redirect to login
-      // Auto-login with demo credentials
-      login("admin@agentone.com", "1234");
-    }
-  }, [isLoading, isAuthenticated, login]);
 
   if (isLoading) {
     return (
