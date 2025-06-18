@@ -14,14 +14,17 @@ import { useModels } from "@/hooks/useModels";
 import { useVectors } from "@/hooks/useVectors";
 import { useIntegrations } from "@/hooks/useIntegrations";
 import { useGuardrails } from "@/hooks/useGuardrails";
+import { EditAgentModal } from "@/components/modals/EditAgentModal";
 
 const Agents = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<any>(null);
   
   // Use real API data
-  const { agents, isLoading, createAgent, isCreating } = useAgents();
+  const { agents, isLoading, createAgent, updateAgent, isCreating, isUpdating } = useAgents();
   const { models } = useModels();
   const { vectors } = useVectors();
   const { integrations } = useIntegrations();
@@ -35,6 +38,17 @@ const Agents = () => {
     
     return matchesSearch && matchesStatus;
   });
+
+  const handleEditAgent = (agent: any) => {
+    setSelectedAgent(agent);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveAgent = (agentData: any) => {
+    updateAgent(agentData);
+    setEditModalOpen(false);
+    setSelectedAgent(null);
+  };
 
   if (isLoading) {
     return (
@@ -120,7 +134,15 @@ const Agents = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredAgents.length > 0 ? (
           filteredAgents.map((agent) => (
-            <AgentCard key={agent.agent_id} agent={agent} models={models} vectors={vectors} integrations={integrations} guardrails={guardrails} />
+            <AgentCard 
+              key={agent.agent_id} 
+              agent={agent} 
+              models={models} 
+              vectors={vectors} 
+              integrations={integrations} 
+              guardrails={guardrails}
+              onEdit={handleEditAgent}
+            />
           ))
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
@@ -158,6 +180,17 @@ const Agents = () => {
         createAgent={createAgent}
         isCreating={isCreating}
       />
+
+      <EditAgentModal
+        agent={selectedAgent}
+        isOpen={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedAgent(null);
+        }}
+        onSave={handleSaveAgent}
+        isLoading={isUpdating}
+      />
     </div>
   );
 };
@@ -168,9 +201,10 @@ interface AgentCardProps {
   vectors: any[];
   integrations: any[];
   guardrails: any[];
+  onEdit: (agent: any) => void;
 }
 
-const AgentCard = ({ agent, models, vectors, integrations, guardrails }: AgentCardProps) => {
+const AgentCard = ({ agent, models, vectors, integrations, guardrails, onEdit }: AgentCardProps) => {
   // Find the related model, vector, integrations, and guardrails
   const model = models.find(m => m.id === agent.aimodel_id?.toString());
   const vector = vectors.find(v => v.id === agent.aivector_id?.toString());
@@ -241,7 +275,7 @@ const AgentCard = ({ agent, models, vectors, integrations, guardrails }: AgentCa
         </div>
       </CardFooter>
       <div className="bg-muted p-2 flex justify-end gap-2">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => onEdit(agent)}>
           Edit
         </Button>
         <Button size="sm">

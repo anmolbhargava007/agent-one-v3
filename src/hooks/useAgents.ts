@@ -42,11 +42,37 @@ export const useAgents = () => {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.updateAgent(data);
+      if (!response.success) {
+        throw new Error(response.msg || 'Failed to update agent');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['agents'] });
+      toast({
+        title: "Success",
+        description: "Agent updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update agent",
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     agents,
     isLoading,
     error,
     createAgent: createMutation.mutate,
+    updateAgent: updateMutation.mutate,
     isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
   };
 };

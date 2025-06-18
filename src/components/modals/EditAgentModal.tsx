@@ -132,8 +132,8 @@ export const EditAgentModal = ({ agent, isOpen, onClose, onSave, isLoading }: Ed
               </SelectTrigger>
               <SelectContent>
                 {models.map((model) => (
-                  <SelectItem key={model.aimodel_id} value={model.aimodel_id.toString()}>
-                    {model.aimodel_name}
+                  <SelectItem key={model.id} value={model.id}>
+                    {model.name}
                   </SelectItem>
                 ))}
               </SelectContent>
