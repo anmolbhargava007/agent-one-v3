@@ -31,18 +31,18 @@ const Integrations = () => {
   const { toast } = useToast();
 
   // Use real API data
-  const { integrations, isLoading, createIntegration, isCreating } = useIntegrations();
+  const { integrations, isLoading, createIntegration, isCreating, updateIntegration, isUpdating } = useIntegrations();
 
   const handleNewIntegration = () => {
     setShowNewIntegrationModal(true);
   };
 
-  const handleToggle = (id: string) => {
-    // This would be implemented with a toggle API call
-    toast({
-      title: "Integration Status Updated",
-      description: "Integration status has been updated successfully.",
-    });
+  const handleToggle = async (integration: any) => {
+    const updatedIntegration = {
+      ...integration,
+      is_active: !integration.is_active
+    };
+    updateIntegration(updatedIntegration);
   };
 
   const handleCreateIntegration = async () => {
@@ -147,15 +147,15 @@ const Integrations = () => {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status</span>
                       <span className={integration.is_active ? "text-green-500" : "text-red-500"}>
-                        {integration.is_active ? "Enabled" : "Disabled"}
+                        {integration.is_active ? "Connected" : "Disconnected"}
                       </span>
                     </div>
                     <Button 
-                      className="w-full mt-4" 
-                      variant={integration.is_active ? "destructive" : "default"} 
-                      onClick={() => handleToggle(integration.integrator_id?.toString() || "")}
+                      className={`w-full mt-4 ${integration.is_active ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
+                      onClick={() => handleToggle(integration)}
+                      disabled={isUpdating}
                     >
-                      {integration.is_active ? "Disconnect" : "Connect"}
+                      {isUpdating ? "Updating..." : (integration.is_active ? "Disconnect" : "Connect")}
                     </Button>
                   </div>
                 </CardContent>

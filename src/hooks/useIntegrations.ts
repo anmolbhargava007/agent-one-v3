@@ -52,11 +52,37 @@ export const useIntegrations = () => {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async (data: IntegrationData) => {
+      const response = await apiClient.updateIntegrator(data);
+      if (!response.success) {
+        throw new Error(response.msg || 'Failed to update integration');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['integrations'] });
+      toast({
+        title: "Success",
+        description: "Integration updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update integration",
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     integrations,
     isLoading,
     error,
     createIntegration: createMutation.mutate,
     isCreating: createMutation.isPending,
+    updateIntegration: updateMutation.mutate,
+    isUpdating: updateMutation.isPending,
   };
 };

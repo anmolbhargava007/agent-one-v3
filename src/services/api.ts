@@ -299,6 +299,13 @@ class ApiClient {
     return this.request(`/integrators${query ? `?${query}` : ''}`);
   }
 
+  async updateIntegrator(data: any): Promise<ApiResponse> {
+    return this.request('/integrators', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
   // Agents methods
   async createAgent(data: CreateAgentRequest): Promise<ApiResponse> {
     return this.request('/agents', {
@@ -322,6 +329,34 @@ class ApiClient {
     }
     const query = searchParams.toString();
     return this.request(`/agents${query ? `?${query}` : ''}`);
+  }
+
+  async updateAgent(data: any): Promise<ApiResponse> {
+    return this.request('/agents', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Utility method to check if item is used in agents
+  async checkItemUsageInAgents(itemType: 'aimodel_id' | 'aivector_id' | 'integrator_ids' | 'guardrail_ids', itemId: number): Promise<boolean> {
+    try {
+      const response = await this.getAgents({ is_active: true });
+      if (response.success && response.data) {
+        return response.data.some((agent: any) => {
+          if (itemType === 'integrator_ids' || itemType === 'guardrail_ids') {
+            const ids = agent[itemType] || [];
+            return Array.isArray(ids) && ids.includes(itemId);
+          } else {
+            return agent[itemType] === itemId;
+          }
+        });
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking item usage:', error);
+      return false;
+    }
   }
 }
 
