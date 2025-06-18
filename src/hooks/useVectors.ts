@@ -21,9 +21,9 @@ export const useVectors = () => {
           name: apiVector.aivector_name || apiVector.name,
           provider: apiVector.provider_name || apiVector.provider,
           description: apiVector.descriptions || apiVector.description,
-          features: Array.isArray(apiVector.features) ? apiVector.features : [],
-          scalability: apiVector.scalability || 'medium',
           version: apiVector.version || '1.0',
+          scalability: apiVector.scalability || 'medium',
+          features: Array.isArray(apiVector.features) ? apiVector.features : [],
         }));
         
         setVectors(transformedVectors);

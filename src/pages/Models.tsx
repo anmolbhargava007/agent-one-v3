@@ -10,12 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Cpu, Database, Plus, Search, Filter, Settings, ArrowRight, Edit, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { mockModels, mockVectorDBs } from "@/data/mockData";
 import { Model, VectorDB, ModelSize, ModelType } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ModelForm from "@/components/models/ModelForm";
 import VectorDbForm from "@/components/models/VectorDbForm";
+import { useModels } from "@/hooks/useModels";
+import { useVectors } from "@/hooks/useVectors";
 
 const Models = () => {
   const [activeTab, setActiveTab] = useState("models");
@@ -23,8 +24,6 @@ const Models = () => {
   const [modelTypeFilter, setModelTypeFilter] = useState<ModelType | "all">("all");
   const [modelSizeFilter, setModelSizeFilter] = useState<ModelSize | "all">("all");
   const [dbSearchQuery, setDbSearchQuery] = useState("");
-  const [models, setModels] = useState<Model[]>(mockModels);
-  const [vectorDBs, setVectorDBs] = useState<VectorDB[]>(mockVectorDBs);
   
   const [isModelModalOpen, setIsModelModalOpen] = useState(false);
   const [isDbModalOpen, setIsDbModalOpen] = useState(false);
@@ -36,6 +35,10 @@ const Models = () => {
   const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'model' | 'db', name: string } | null>(null);
   
   const { toast } = useToast();
+  
+  // Use real API hooks
+  const { models, isLoading: modelsLoading, createModel, updateModel, deleteModel } = useModels();
+  const { vectors, isLoading: vectorsLoading, createVector, updateVector, deleteVector } = useVectors();
   
   // Filter models based on search query and filters
   const filteredModels = models.filter(model => {
@@ -49,7 +52,7 @@ const Models = () => {
   });
   
   // Filter vector DBs based on search query
-  const filteredVectorDBs = vectorDBs.filter(db => {
+  const filteredVectorDBs = vectors.filter(db => {
     return db.name.toLowerCase().includes(dbSearchQuery.toLowerCase()) || 
           db.description.toLowerCase().includes(dbSearchQuery.toLowerCase()) ||
           db.provider.toLowerCase().includes(dbSearchQuery.toLowerCase());
@@ -84,62 +87,46 @@ const Models = () => {
   };
 
   // Handle saving a model (create or update)
-  const handleSaveModel = (modelData: any) => {
+  const handleSaveModel = async (modelData: any) => {
+    let success = false;
     if (isEditMode && selectedModel) {
-      // Update existing model
-      setModels(models.map(model => 
-        model.id === selectedModel.id 
-          ? { ...model, ...modelData }
-          : model
-      ));
+      success = await updateModel(selectedModel.id, modelData);
     } else {
-      // Create new model
-      const newModel: Model = {
-        id: `model-${Math.random().toString(36).substring(2, 10)}`,
-        ...modelData
-      };
-      setModels([...models, newModel]);
+      success = await createModel(modelData);
     }
-    setIsModelModalOpen(false);
+    if (success) {
+      setIsModelModalOpen(false);
+    }
   };
 
   // Handle saving a database (create or update)
-  const handleSaveDatabase = (dbData: any) => {
+  const handleSaveDatabase = async (dbData: any) => {
+    let success = false;
     if (isEditMode && selectedDb) {
-      // Update existing database
-      setVectorDBs(vectorDBs.map(db => 
-        db.id === selectedDb.id 
-          ? { ...db, ...dbData }
-          : db
-      ));
+      success = await updateVector(selectedDb.id, dbData);
     } else {
-      // Create new database
-      const newDb: VectorDB = {
-        id: `db-${Math.random().toString(36).substring(2, 10)}`,
-        ...dbData
-      };
-      setVectorDBs([...vectorDBs, newDb]);
+      success = await createVector(dbData);
     }
-    setIsDbModalOpen(false);
+    if (success) {
+      setIsDbModalOpen(false);
+    }
   };
 
   // Handle confirming deletion of a model or database
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!itemToDelete) return;
     
+    let success = false;
     if (itemToDelete.type === 'model') {
-      setModels(models.filter(model => model.id !== itemToDelete.id));
+      success = await deleteModel(itemToDelete.id);
     } else {
-      setVectorDBs(vectorDBs.filter(db => db.id !== itemToDelete.id));
+      success = await deleteVector(itemToDelete.id);
     }
     
-    toast({
-      title: `${itemToDelete.type === 'model' ? 'Model' : 'Database'} Deleted`,
-      description: `${itemToDelete.name} has been removed successfully.`,
-    });
-    
-    setIsDeleteDialogOpen(false);
-    setItemToDelete(null);
+    if (success) {
+      setIsDeleteDialogOpen(false);
+      setItemToDelete(null);
+    }
   };
 
   // Handle opening the delete confirmation dialog
@@ -260,7 +247,14 @@ const Models = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredModels.length > 0 ? (
+            {modelsLoading ? (
+              <div className="col-span-full flex items-center justify-center py-12">
+                <div className="text-center">
+                  <Cpu className="h-8 w-8 text-muted-foreground animate-spin mx-auto mb-4" />
+                  <p className="text-muted-foreground">Loading models...</p>
+                </div>
+              </div>
+            ) : filteredModels.length > 0 ? (
               filteredModels.map((model) => (
                 <Card key={model.id}>
                   <CardHeader className="pb-2">
@@ -401,7 +395,14 @@ const Models = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredVectorDBs.length > 0 ? (
+            {vectorsLoading ? (
+              <div className="col-span-full flex items-center justify-center py-12">
+                <div className="text-center">
+                  <Database className="h-8 w-8 text-muted-foreground animate-spin mx-auto mb-4" />
+                  <p className="text-muted-foreground">Loading databases...</p>
+                </div>
+              </div>
+            ) : filteredVectorDBs.length > 0 ? (
               filteredVectorDBs.map((db) => (
                 <Card key={db.id}>
                   <CardHeader className="pb-2">

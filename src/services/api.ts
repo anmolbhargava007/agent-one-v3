@@ -232,6 +232,13 @@ class ApiClient {
   }
 
   // Guardrails methods
+  async createGuardrail(data: any): Promise<ApiResponse> {
+    return this.request('/guardrails', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   async getGuardrails(params?: {
     guardrail_id?: number;
     guardrail_name?: string;
@@ -247,13 +254,6 @@ class ApiClient {
     }
     const query = searchParams.toString();
     return this.request(`/guardrails${query ? `?${query}` : ''}`);
-  }
-
-  async createGuardrail(data: any): Promise<ApiResponse> {
-    return this.request('/guardrails', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
   }
 
   async updateGuardrail(data: any): Promise<ApiResponse> {
@@ -275,6 +275,13 @@ class ApiClient {
   }
 
   // Integrators methods
+  async createIntegrator(data: any): Promise<ApiResponse> {
+    return this.request('/integrators', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   async getIntegrators(params?: {
     integrator_id?: number;
     integrator_name?: string;
@@ -290,13 +297,6 @@ class ApiClient {
     }
     const query = searchParams.toString();
     return this.request(`/integrators${query ? `?${query}` : ''}`);
-  }
-
-  async createIntegrator(data: any): Promise<ApiResponse> {
-    return this.request('/integrators', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
   }
 
   // Agents methods
@@ -325,4 +325,5 @@ class ApiClient {
   }
 }
 
+// Create and export the API client instance
 export const apiClient = new ApiClient(API_BASE_URL);
