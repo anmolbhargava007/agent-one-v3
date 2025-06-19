@@ -114,14 +114,13 @@ export interface MarketplaceItem {
   name: string;
   description: string;
   category: string;
-  tags: string[];
   provider: string;
-  pricing: string;
-  rating: number;
-  downloads: number;
-  createdAt: Date;
-  updatedAt: Date;
-  type: 'agent' | 'integration' | 'model' | 'template' | 'workflow';
+  pricing: 'Free' | 'Paid';
+  link: string;
+  image?: string;
+  featured?: boolean;
+  downloads?: number;
+  createdAt?: string; // ISO format preferred
 }
 
 // Deployment Types

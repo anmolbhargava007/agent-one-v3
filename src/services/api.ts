@@ -87,7 +87,6 @@ class ApiClient {
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
-    this.token = localStorage.getItem('agentone-token');
   }
 
   private getHeaders(): Record<string, string> {
@@ -100,16 +99,6 @@ class ApiClient {
     }
 
     return headers;
-  }
-
-  setToken(token: string) {
-    this.token = token;
-    localStorage.setItem('agentone-token', token);
-  }
-
-  clearToken() {
-    this.token = null;
-    localStorage.removeItem('agentone-token');
   }
 
   async request<T>(

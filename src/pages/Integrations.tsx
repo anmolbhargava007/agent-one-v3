@@ -151,7 +151,7 @@ const Integrations = () => {
                       </span>
                     </div>
                     <Button 
-                      className={`w-full mt-4 ${integration.is_active ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
+                      className={`w-full mt-4 ${integration.is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
                       onClick={() => handleToggle(integration)}
                       disabled={isUpdating}
                     >

@@ -20,40 +20,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if we have a stored user and token in localStorage
     const storedUser = localStorage.getItem('agentone-user');
-    const storedToken = localStorage.getItem('agentone-token');
-    
-    if (storedUser && storedToken) {
+    if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
-        apiClient.setToken(storedToken);
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
       } catch (error) {
         localStorage.removeItem('agentone-user');
-        localStorage.removeItem('agentone-token');
-        apiClient.clearToken();
+        setUser(null);
       }
+    } else {
+      setUser(null);
     }
     setIsLoading(false);
   }, []);
 
+
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
-    
+
     try {
       const signInData: SigninRequest = {
         user_email: email,
         user_pwd: password,
       };
-      
+
       const response = await apiClient.signin(signInData);
-      
+
       if (response.success) {
-        // Set the token in the API client
-        if (response.accessToken) {
-          apiClient.setToken(response.accessToken);
-        }
-        
+
         // Create user object from response data
         const userData: User = {
           id: response.data?.user_id || email,
@@ -63,10 +58,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        
+
         setUser(userData);
         localStorage.setItem('agentone-user', JSON.stringify(userData));
-        
+
         toast.success(response.msg || `Welcome back, ${userData.name}!`);
         setIsLoading(false);
         return true;
@@ -85,10 +80,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (userData: SignupRequest): Promise<boolean> => {
     setIsLoading(true);
-    
+
     try {
       const response = await apiClient.signup(userData);
-      
+
       if (response.success) {
         toast.success(response.msg || 'Account created successfully! Please login.');
         setIsLoading(false);
@@ -105,15 +100,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return false;
     }
   };
-  
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('agentone-user');
-    localStorage.removeItem('agentone-token');
-    apiClient.clearToken();
     toast.info('You have been logged out');
   };
-  
+
   return (
     <AuthContext.Provider value={{
       user,
