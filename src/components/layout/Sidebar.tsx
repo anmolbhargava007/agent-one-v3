@@ -134,7 +134,7 @@ export const Sidebar = () => {
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" onClick={logout}>
-                    <LogOut size={18} className="text-muted-foreground" />
+                   Logout <LogOut size={18} className="text-muted-foreground" />
                   </Button>
                 </div>
               </>

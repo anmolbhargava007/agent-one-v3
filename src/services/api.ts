@@ -27,6 +27,14 @@ export interface SigninRequest {
   user_email: string;
   user_pwd: string;
 }
+export interface UserForManagement {
+  user_id: number;
+  user_name: string;
+  user_email: string;
+  user_mobile: string;
+  gender: "MALE" | "FEMALE" | "OTHER";
+  is_active: boolean;
+}
 
 // Model interfaces
 export interface CreateModelRequest {

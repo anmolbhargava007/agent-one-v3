@@ -24,38 +24,38 @@ const Models = () => {
   const [modelTypeFilter, setModelTypeFilter] = useState<ModelType | "all">("all");
   const [modelSizeFilter, setModelSizeFilter] = useState<ModelSize | "all">("all");
   const [dbSearchQuery, setDbSearchQuery] = useState("");
-  
+
   const [isModelModalOpen, setIsModelModalOpen] = useState(false);
   const [isDbModalOpen, setIsDbModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [selectedDb, setSelectedDb] = useState<VectorDB | null>(null);
-  
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'model' | 'db', name: string } | null>(null);
-  
+
   const { toast } = useToast();
-  
+
   // Use real API hooks
   const { models, isLoading: modelsLoading, createModel, updateModel, deleteModel } = useModels();
   const { vectors, isLoading: vectorsLoading, createVector, updateVector, deleteVector } = useVectors();
-  
+
   // Filter models based on search query and filters
   const filteredModels = models.filter(model => {
-    const matchesSearch = model.name.toLowerCase().includes(modelSearchQuery.toLowerCase()) || 
-                          model.description.toLowerCase().includes(modelSearchQuery.toLowerCase()) ||
-                          model.provider.toLowerCase().includes(modelSearchQuery.toLowerCase());
+    const matchesSearch = model.name.toLowerCase().includes(modelSearchQuery.toLowerCase()) ||
+      model.description.toLowerCase().includes(modelSearchQuery.toLowerCase()) ||
+      model.provider.toLowerCase().includes(modelSearchQuery.toLowerCase());
     const matchesType = modelTypeFilter === "all" || model.type === modelTypeFilter;
     const matchesSize = modelSizeFilter === "all" || model.size === modelSizeFilter;
-    
+
     return matchesSearch && matchesType && matchesSize;
   });
-  
+
   // Filter vector DBs based on search query
   const filteredVectorDBs = vectors.filter(db => {
-    return db.name.toLowerCase().includes(dbSearchQuery.toLowerCase()) || 
-          db.description.toLowerCase().includes(dbSearchQuery.toLowerCase()) ||
-          db.provider.toLowerCase().includes(dbSearchQuery.toLowerCase());
+    return db.name.toLowerCase().includes(dbSearchQuery.toLowerCase()) ||
+      db.description.toLowerCase().includes(dbSearchQuery.toLowerCase()) ||
+      db.provider.toLowerCase().includes(dbSearchQuery.toLowerCase());
   });
 
   // Handle opening the add model modal
@@ -115,14 +115,14 @@ const Models = () => {
   // Handle confirming deletion of a model or database
   const confirmDelete = async () => {
     if (!itemToDelete) return;
-    
+
     let success = false;
     if (itemToDelete.type === 'model') {
       success = await deleteModel(itemToDelete.id);
     } else {
       success = await deleteVector(itemToDelete.id);
     }
-    
+
     if (success) {
       setIsDeleteDialogOpen(false);
       setItemToDelete(null);
@@ -166,7 +166,7 @@ const Models = () => {
       description: `Opening configuration for ${db.name}.`,
     });
   };
-  
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
@@ -180,19 +180,19 @@ const Models = () => {
           <Button variant="outline" onClick={handleAddDatabase}>
             <Database className="mr-2 h-4 w-4" /> Add Database
           </Button>
-          
+
           <Button onClick={handleAddModel}>
             <Plus className="mr-2 h-4 w-4" /> Add Model
           </Button>
         </div>
       </div>
-      
+
       <Tabs defaultValue="models" className="space-y-6" onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="models">AI Models</TabsTrigger>
           <TabsTrigger value="databases">Vector Databases</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="models" className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -204,16 +204,16 @@ const Models = () => {
                 onChange={(e) => setModelSearchQuery(e.target.value)}
               />
             </div>
-            
+
             <div className="flex gap-2">
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 className="flex gap-1.5 items-center"
               >
                 <Filter className="h-3.5 w-3.5" />
                 <span>Type:</span>
-                <select 
+                <select
                   className="bg-transparent border-none focus:outline-none text-primary"
                   value={modelTypeFilter}
                   onChange={(e) => setModelTypeFilter(e.target.value as ModelType | "all")}
@@ -224,15 +224,15 @@ const Models = () => {
                   <option value="multi-modal">Multi-modal</option>
                 </select>
               </Button>
-              
-              <Button 
+
+              <Button
                 variant="outline"
                 size="sm"
                 className="flex gap-1.5 items-center"
               >
                 <Filter className="h-3.5 w-3.5" />
                 <span>Size:</span>
-                <select 
+                <select
                   className="bg-transparent border-none focus:outline-none text-primary"
                   value={modelSizeFilter}
                   onChange={(e) => setModelSizeFilter(e.target.value as ModelSize | "all")}
@@ -245,7 +245,7 @@ const Models = () => {
               </Button>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {modelsLoading ? (
               <div className="col-span-full flex items-center justify-center py-12">
@@ -266,24 +266,24 @@ const Models = () => {
                       <div className="flex gap-2">
                         <Badge variant="outline" className={cn(
                           model.type === "language" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                          model.type === "vision" ? "bg-green-50 text-green-700 border-green-200" :
-                          "bg-purple-50 text-purple-700 border-purple-200"
+                            model.type === "vision" ? "bg-green-50 text-green-700 border-green-200" :
+                              "bg-purple-50 text-purple-700 border-purple-200"
                         )}>
                           {model.type}
                         </Badge>
                         <div className="flex gap-1">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
                             onClick={() => handleEditModel(model)}
                           >
                             <Edit className="h-3.5 w-3.5" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7 text-red-500" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-red-500"
                             onClick={() => handleDelete(model.id, 'model', model.name)}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -298,23 +298,23 @@ const Models = () => {
                         <span className="text-sm text-muted-foreground">Provider</span>
                         <span className="text-sm font-medium">{model.provider}</span>
                       </div>
-                      
+
                       <div className="space-y-1">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Parameters</span>
                           <span className="text-sm font-medium">
-                            {model.parameters >= 1_000_000_000 
-                              ? `${(model.parameters / 1_000_000_000).toFixed(1)}B` 
+                            {model.parameters >= 1_000_000_000
+                              ? `${(model.parameters / 1_000_000_000).toFixed(1)}B`
                               : `${(model.parameters / 1_000_000).toFixed(0)}M`}
                           </span>
                         </div>
                         <Progress value={
                           model.parameters >= 70_000_000_000 ? 100 :
-                          model.parameters >= 7_000_000_000 ? 60 :
-                          30
+                            model.parameters >= 7_000_000_000 ? 60 :
+                              30
                         } className="h-1.5" />
                       </div>
-                      
+
                       <div className="space-y-1">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Context Window</span>
@@ -322,11 +322,11 @@ const Models = () => {
                         </div>
                         <Progress value={
                           model.contextWindow >= 32768 ? 100 :
-                          model.contextWindow >= 8192 ? 60 :
-                          30
+                            model.contextWindow >= 8192 ? 60 :
+                              30
                         } className="h-1.5" />
                       </div>
-                      
+
                       <div>
                         <span className="text-sm text-muted-foreground">Capabilities</span>
                         <div className="flex flex-wrap gap-1.5 mt-2">
@@ -348,8 +348,8 @@ const Models = () => {
                     <Badge className={cn(
                       "capitalize",
                       model.size === "small" ? "bg-green-100 text-green-800 hover:bg-green-100" :
-                      model.size === "medium" ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" :
-                      "bg-red-100 text-red-800 hover:bg-red-100"
+                        model.size === "medium" ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" :
+                          "bg-red-100 text-red-800 hover:bg-red-100"
                     )}>
                       {model.size} size
                     </Badge>
@@ -380,7 +380,7 @@ const Models = () => {
             )}
           </div>
         </TabsContent>
-        
+
         <TabsContent value="databases" className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -393,7 +393,7 @@ const Models = () => {
               />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {vectorsLoading ? (
               <div className="col-span-full flex items-center justify-center py-12">
@@ -414,18 +414,18 @@ const Models = () => {
                       <div className="flex gap-2">
                         <Badge variant="outline">v{db.version}</Badge>
                         <div className="flex gap-1">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
                             onClick={() => handleEditDatabase(db)}
                           >
                             <Edit className="h-3.5 w-3.5" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-7 w-7 text-red-500" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-red-500"
                             onClick={() => handleDelete(db.id, 'db', db.name)}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -440,19 +440,19 @@ const Models = () => {
                         <span className="text-sm text-muted-foreground">Provider</span>
                         <span className="text-sm font-medium">{db.provider}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Scalability</span>
                         <Badge className={cn(
                           "capitalize",
                           db.scalability === "high" ? "bg-green-100 text-green-800 hover:bg-green-100" :
-                          db.scalability === "medium" ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" :
-                          "bg-red-100 text-red-800 hover:bg-red-100"
+                            db.scalability === "medium" ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" :
+                              "bg-red-100 text-red-800 hover:bg-red-100"
                         )}>
                           {db.scalability}
                         </Badge>
                       </div>
-                      
+
                       <div>
                         <span className="text-sm text-muted-foreground">Features</span>
                         <div className="flex flex-wrap gap-1.5 mt-2">
@@ -500,16 +500,16 @@ const Models = () => {
 
       {/* Model Form Dialog */}
       <Dialog open={isModelModalOpen} onOpenChange={setIsModelModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{isEditMode ? "Edit Model" : "Add New Model"}</DialogTitle>
             <DialogDescription>
-              {isEditMode 
-                ? "Update the model information and capabilities" 
+              {isEditMode
+                ? "Update the model information and capabilities"
                 : "Register a new foundation model in your system"}
             </DialogDescription>
           </DialogHeader>
-          <ModelForm 
+          <ModelForm
             onSave={handleSaveModel}
             onCancel={() => setIsModelModalOpen(false)}
             initialData={selectedModel}
@@ -524,12 +524,12 @@ const Models = () => {
           <DialogHeader>
             <DialogTitle>{isEditMode ? "Edit Vector Database" : "Add New Vector Database"}</DialogTitle>
             <DialogDescription>
-              {isEditMode 
-                ? "Update the database information and configuration" 
+              {isEditMode
+                ? "Update the database information and configuration"
                 : "Configure a new vector database connection"}
             </DialogDescription>
           </DialogHeader>
-          <VectorDbForm 
+          <VectorDbForm
             onSave={handleSaveDatabase}
             onCancel={() => setIsDbModalOpen(false)}
             initialData={selectedDb}
@@ -544,7 +544,7 @@ const Models = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete {itemToDelete?.type === 'model' ? 'Model' : 'Database'}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the {itemToDelete?.type === 'model' ? 'model' : 'database'} 
+              This action cannot be undone. This will permanently delete the {itemToDelete?.type === 'model' ? 'model' : 'database'}
               "{itemToDelete?.name}" and remove it from your system.
             </AlertDialogDescription>
           </AlertDialogHeader>
