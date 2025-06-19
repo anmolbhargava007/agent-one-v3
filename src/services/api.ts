@@ -1,4 +1,3 @@
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://15.206.121.90:1915/api/v1';
 
 // API response interface
@@ -27,6 +26,7 @@ export interface SigninRequest {
   user_email: string;
   user_pwd: string;
 }
+
 export interface UserForManagement {
   user_id: number;
   user_name: string;
@@ -34,6 +34,26 @@ export interface UserForManagement {
   user_mobile: string;
   gender: "MALE" | "FEMALE" | "OTHER";
   is_active: boolean;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  mobile: string;
+  gender: "MALE" | "FEMALE" | "OTHER";
+  is_active: boolean;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  statusCode: string;
+  msg: string;
+  data?: any;
+  accessToken?: string;
+  refreshToken?: string;
+  expiry_date?: string;
+  is_app_valid?: boolean;
 }
 
 // Model interfaces
@@ -143,6 +163,19 @@ class ApiClient {
     return this.request('/signin', {
       method: 'POST',
       body: JSON.stringify(data),
+    });
+  }
+
+  // User management methods
+  async getUsers(): Promise<{ data: UserForManagement[] }> {
+    const response = await this.request<{ data: UserForManagement[] }>('/user');
+    return response;
+  }
+
+  async updateUser(userData: UserForManagement | User): Promise<AuthResponse> {
+    return this.request('/user', {
+      method: 'PUT',
+      body: JSON.stringify(userData),
     });
   }
 

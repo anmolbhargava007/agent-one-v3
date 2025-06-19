@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,6 +33,7 @@ import ModelForm from "@/components/models/ModelForm";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState("overview");
   const [createAgentOpen, setCreateAgentOpen] = useState(false);
@@ -40,8 +42,23 @@ const Dashboard = () => {
 
   const pieColors = ["#9b87f5", "#7E69AB", "#6163FF", "#B085F5"];
 
+  const handleCreateAgent = () => {
+    navigate("/models");
+    // Note: The models page should handle opening the create agent modal
+  };
+
   const handleAddModel = () => {
-    setIsModelModalOpen(true);
+    navigate("/models");
+    // Note: The models page should handle opening the add model modal
+  };
+
+  const handleNewIntegration = () => {
+    navigate("/integrations");
+    // Note: The integrations page should handle opening the add integration modal
+  };
+
+  const handleMarketplace = () => {
+    navigate("/marketplace");
   };
 
   const handleSaveModel = async (modelData: any) => {
@@ -55,7 +72,6 @@ const Dashboard = () => {
     }
   };
 
-
   return (
     <div>
       <div className="space-y-6">
@@ -66,7 +82,7 @@ const Dashboard = () => {
               Here's what's happening with your AgentOne platform.
             </p>
           </div>
-          <Button onClick={() => setCreateAgentOpen(true)}>
+          <Button onClick={handleCreateAgent}>
             <Plus className="mr-2 h-4 w-4" /> Create New Agent
           </Button>
         </div>
@@ -217,7 +233,7 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center" onClick={() => setCreateAgentOpen(true)}>
+                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center" onClick={handleCreateAgent}>
                       <Bot className="h-6 w-6 mb-2" />
                       <span>Create Agent</span>
                     </Button>
@@ -225,11 +241,11 @@ const Dashboard = () => {
                       <Database className="h-6 w-6 mb-2" />
                       <span>Add Model</span>
                     </Button>
-                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center">
+                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center" onClick={handleNewIntegration}>
                       <Network className="h-6 w-6 mb-2" />
                       <span>New Integration</span>
                     </Button>
-                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center">
+                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center" onClick={handleMarketplace}>
                       <ShoppingBag className="h-6 w-6 mb-2" />
                       <span>Marketplace</span>
                     </Button>

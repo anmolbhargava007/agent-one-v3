@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,14 +25,19 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Bell, Lock, User, Globe, Shield, Cpu, Mail } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const profileFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Invalid email address." }),
-  bio: z.string().max(160, { message: "Bio must not exceed 160 characters." }).optional(),
+  user_name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  user_email: z.string().email({ message: "Invalid email address." }),
+  user_mobile: z.string().min(10, { message: "Mobile number must be at least 10 digits." }),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
+  is_active: z.boolean(),
 });
 
 const notificationsFormSchema = z.object({
@@ -64,17 +68,37 @@ type SecurityFormValues = z.infer<typeof securityFormSchema>;
 const Settings = () => {
   const { toast } = useToast();
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const { users, updateUser, isLoading, isUpdating } = useUserProfile();
   const [apiKey, setApiKey] = useState("sk-a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0");
+
+  // Get current user data
+  const currentUser = users.find(u => u.user_email === user?.email) || users[0];
 
   // Profile form
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      bio: "AI Engineer and Product Manager",
+      user_name: "",
+      user_email: "",
+      user_mobile: "",
+      gender: "MALE",
+      is_active: true,
     },
   });
+
+  // Update form when user data is loaded
+  useEffect(() => {
+    if (currentUser) {
+      profileForm.reset({
+        user_name: currentUser.user_name,
+        user_email: currentUser.user_email,
+        user_mobile: currentUser.user_mobile,
+        gender: currentUser.gender,
+        is_active: currentUser.is_active,
+      });
+    }
+  }, [currentUser, profileForm]);
 
   // Notifications form
   const notificationsForm = useForm<NotificationsFormValues>({
@@ -109,10 +133,12 @@ const Settings = () => {
   });
 
   function onProfileSubmit(data: ProfileFormValues) {
-    toast({
-      title: "Profile updated",
-      description: "Your profile information has been updated successfully.",
-    });
+    if (currentUser) {
+      updateUser({
+        user_id: currentUser.user_id,
+        ...data,
+      });
+    }
   }
 
   function onNotificationsSubmit(data: NotificationsFormValues) {
@@ -147,6 +173,17 @@ const Settings = () => {
     });
   }
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -179,7 +216,7 @@ const Settings = () => {
             <CardHeader>
               <CardTitle>Profile</CardTitle>
               <CardDescription>
-                Manage your public profile information.
+                Manage your profile information.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -187,7 +224,7 @@ const Settings = () => {
                 <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-8">
                   <FormField
                     control={profileForm.control}
-                    name="name"
+                    name="user_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Name</FormLabel>
@@ -195,7 +232,7 @@ const Settings = () => {
                           <Input placeholder="Your name" {...field} />
                         </FormControl>
                         <FormDescription>
-                          This is your public display name.
+                          This is your display name.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -203,7 +240,7 @@ const Settings = () => {
                   />
                   <FormField
                     control={profileForm.control}
-                    name="email"
+                    name="user_email"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
@@ -219,25 +256,68 @@ const Settings = () => {
                   />
                   <FormField
                     control={profileForm.control}
-                    name="bio"
+                    name="user_mobile"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Bio</FormLabel>
+                        <FormLabel>Mobile Number</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder="Tell us a little bit about yourself"
-                            className="resize-none"
-                            {...field}
-                          />
+                          <Input placeholder="Your mobile number" {...field} />
                         </FormControl>
                         <FormDescription>
-                          Brief description for your profile. URLs are hyperlinked.
+                          Your mobile number for contact purposes.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Update profile</Button>
+                  <FormField
+                    control={profileForm.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="MALE">Male</SelectItem>
+                            <SelectItem value="FEMALE">Female</SelectItem>
+                            <SelectItem value="OTHER">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Your gender identity.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={profileForm.control}
+                    name="is_active"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Active Account</FormLabel>
+                          <FormDescription>
+                            Keep your account active and accessible.
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={isUpdating}>
+                    {isUpdating ? "Updating..." : "Update profile"}
+                  </Button>
                 </form>
               </Form>
             </CardContent>
