@@ -167,10 +167,10 @@ class ApiClient {
   }
 
   // User management methods
-  async getUsers(): Promise<{ data: UserForManagement[] }> {
+  async getUsers(): Promise<ApiResponse<{ data: UserForManagement[] }>> {
     const response = await this.request<{ data: UserForManagement[] }>('/user');
     return response;
-  }
+  }  
 
   async updateUser(userData: UserForManagement | User): Promise<AuthResponse> {
     return this.request('/user', {

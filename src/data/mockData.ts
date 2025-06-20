@@ -424,30 +424,31 @@ export const mockAgents: Agent[] = [
 export const mockMarketplaceItems: MarketplaceItem[] = [
   {
     id: '1',
-    name: 'Customer Service',
-    description: 'Complete solution for customer service automation',
+    name: 'DataGpt',
+    description: 'An AI platform for querying and extracting insights from the content.',
     category: 'Business',
-    provider: 'AgentOne',
-    pricing: 'Free',
-    link: 'https://www.demo.com',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRED6sRkpyUY8cOuGLZgBD21hVdzkZyGDBLNw&s',
+    provider: 'DataGpt',
+    pricing: 'Paid',
+    link: 'http://15.206.121.90:82',
+    image: 'https://images.yourstory.com/cs/2/ba6b0930e8cd11edbf1c2f9de7fdeb77/DATAGPT-1698910425252.png?mode=crop&crop=faces&ar=16%3A9&format=auto&w=1920&q=75',
     featured: true,
     downloads: 4520,
     createdAt: '2025-06-01'
   },
   {
     id: '2',
-    name: 'AI Writing Assistant',
-    description: 'Boost productivity by transforming ideas into high-quality content instantly.',
+    name: 'Testament',
+    description: 'An AI tool to auto-generate and execute test cases from user stories.',
     category: 'Productivity',
-    provider: 'SmartText',
+    provider: 'Testament',
     pricing: 'Paid',
-    link: 'https://www.smarttext.ai',
-    image: 'https://learn.g2.com/hubfs/G2CR_B160_AI_Writing_Assistants_V1a.png',
+    link: 'http://15.206.121.90:81',
+    image: 'https://bito.ai/wp-content/uploads/2024/01/W.png',
     featured: false,
     downloads: 8012,
     createdAt: '2025-06-15'
-  }
+  },
+
 ];
 
 // Mock Deployments

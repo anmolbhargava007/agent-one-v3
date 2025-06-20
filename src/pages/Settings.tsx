@@ -31,6 +31,7 @@ import { Bell, Lock, User, Globe, Shield, Cpu, Mail } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { UserForManagement } from "@/services/api";
 
 const profileFormSchema = z.object({
   user_name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -73,8 +74,9 @@ const Settings = () => {
   const [apiKey, setApiKey] = useState("sk-a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0");
 
   // Get current user data
-  const currentUser = users.find(u => u.user_email === user?.email) || users[0];
-
+  const userList = Array.isArray(users) ? users : users.data;
+  const currentUser = userList.find(u => u.user_email === user?.email) || userList[0];
+  
   // Profile form
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -134,10 +136,16 @@ const Settings = () => {
 
   function onProfileSubmit(data: ProfileFormValues) {
     if (currentUser) {
-      updateUser({
+      const user: UserForManagement = {
         user_id: currentUser.user_id,
-        ...data,
-      });
+        user_name: data.user_name || "",
+        user_email: data.user_email || "",
+        user_mobile: data.user_mobile || "",
+        gender: data.gender || "OTHER",
+        is_active: data.is_active ?? true, // use ?? to default only if undefined
+      };
+  
+      updateUser(user);
     }
   }
 
