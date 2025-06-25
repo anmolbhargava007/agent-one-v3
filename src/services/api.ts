@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://15.206.121.90:1915/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://15.206.121.90:1915'
 
 // API response interface
 export interface ApiResponse<T = any> {
