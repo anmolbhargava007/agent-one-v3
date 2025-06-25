@@ -153,14 +153,14 @@ class ApiClient {
 
   // Authentication methods
   async signup(data: SignupRequest): Promise<ApiResponse> {
-    return this.request('/signup', {
+    return this.request('/api/v1/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async signin(data: SigninRequest): Promise<ApiResponse> {
-    return this.request('/signin', {
+    return this.request('/api/v1/signin', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -168,12 +168,12 @@ class ApiClient {
 
   // User management methods
   async getUsers(): Promise<ApiResponse<{ data: UserForManagement[] }>> {
-    const response = await this.request<{ data: UserForManagement[] }>('/user');
+    const response = await this.request<{ data: UserForManagement[] }>('/api/v1/user');
     return response;
   }  
 
   async updateUser(userData: UserForManagement | User): Promise<AuthResponse> {
-    return this.request('/user', {
+    return this.request('/api/v1/user', {
       method: 'PUT',
       body: JSON.stringify(userData),
     });
@@ -181,7 +181,7 @@ class ApiClient {
 
   // AI Models methods
   async createModel(data: CreateModelRequest): Promise<ApiResponse> {
-    return this.request('/aimodels', {
+    return this.request('/api/v1/aimodels', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -201,30 +201,30 @@ class ApiClient {
       });
     }
     const query = searchParams.toString();
-    return this.request(`/aimodels${query ? `?${query}` : ''}`);
+    return this.request(`/api/v1/aimodels${query ? `?${query}` : ''}`);
   }
 
   async updateModel(data: UpdateModelRequest): Promise<ApiResponse> {
-    return this.request('/aimodels', {
+    return this.request('/api/v1/aimodels', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   }
 
   async toggleModelStatus(data: ToggleStatusRequest): Promise<ApiResponse> {
-    return this.request('/aimodels', {
+    return this.request('/api/v1/aimodels', {
       method: 'DELETE',
       body: JSON.stringify(data),
     });
   }
 
   async checkModelDuplicate(name: string): Promise<ApiResponse> {
-    return this.request(`/aimodels-isduplicate?aimodel_name=${encodeURIComponent(name)}`);
+    return this.request(`/api/v1/aimodels-isduplicate?aimodel_name=${encodeURIComponent(name)}`);
   }
 
   // AI Vectors methods
   async createVector(data: CreateVectorRequest): Promise<ApiResponse> {
-    return this.request('/aivectors', {
+    return this.request('/api/v1/aivectors', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -244,18 +244,18 @@ class ApiClient {
       });
     }
     const query = searchParams.toString();
-    return this.request(`/aivectors${query ? `?${query}` : ''}`);
+    return this.request(`/api/v1/aivectors${query ? `?${query}` : ''}`);
   }
 
   async updateVector(data: UpdateVectorRequest): Promise<ApiResponse> {
-    return this.request('/aivectors', {
+    return this.request('/api/v1/aivectors', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   }
 
   async toggleVectorStatus(data: ToggleStatusRequest): Promise<ApiResponse> {
-    return this.request('/aivectors', {
+    return this.request('/api/v1/aivectors', {
       method: 'DELETE',
       body: JSON.stringify(data),
     });
@@ -263,7 +263,7 @@ class ApiClient {
 
   // Guardrails methods
   async createGuardrail(data: any): Promise<ApiResponse> {
-    return this.request('/guardrails', {
+    return this.request('/api/v1/guardrails', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -283,30 +283,30 @@ class ApiClient {
       });
     }
     const query = searchParams.toString();
-    return this.request(`/guardrails${query ? `?${query}` : ''}`);
+    return this.request(`/api/v1/guardrails${query ? `?${query}` : ''}`);
   }
 
   async updateGuardrail(data: any): Promise<ApiResponse> {
-    return this.request('/guardrails', {
+    return this.request('/api/v1/guardrails', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   }
 
   async toggleGuardrailStatus(data: ToggleStatusRequest): Promise<ApiResponse> {
-    return this.request('/guardrails', {
+    return this.request('/api/v1/guardrails', {
       method: 'DELETE',
       body: JSON.stringify(data),
     });
   }
 
   async checkGuardrailDuplicate(name: string): Promise<ApiResponse> {
-    return this.request(`/guardrails-isduplicate?guardrail_name=${encodeURIComponent(name)}`);
+    return this.request(`/api/v1/guardrails-isduplicate?guardrail_name=${encodeURIComponent(name)}`);
   }
 
   // Integrators methods
   async createIntegrator(data: any): Promise<ApiResponse> {
-    return this.request('/integrators', {
+    return this.request('/api/v1/integrators', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -326,11 +326,11 @@ class ApiClient {
       });
     }
     const query = searchParams.toString();
-    return this.request(`/integrators${query ? `?${query}` : ''}`);
+    return this.request(`/api/v1/integrators${query ? `?${query}` : ''}`);
   }
 
   async updateIntegrator(data: any): Promise<ApiResponse> {
-    return this.request('/integrators', {
+    return this.request('/api/v1/integrators', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
@@ -338,7 +338,7 @@ class ApiClient {
 
   // Agents methods
   async createAgent(data: CreateAgentRequest): Promise<ApiResponse> {
-    return this.request('/agents', {
+    return this.request('/api/v1/agents', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -358,11 +358,11 @@ class ApiClient {
       });
     }
     const query = searchParams.toString();
-    return this.request(`/agents${query ? `?${query}` : ''}`);
+    return this.request(`/api/v1/agents${query ? `?${query}` : ''}`);
   }
 
   async updateAgent(data: any): Promise<ApiResponse> {
-    return this.request('/agents', {
+    return this.request('/api/v1/agents', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
