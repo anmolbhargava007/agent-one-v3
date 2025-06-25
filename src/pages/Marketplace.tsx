@@ -14,7 +14,7 @@ const Marketplace = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [pricingFilter, setPricingFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("featured"); // NEW STATE
+  const [sortBy, setSortBy] = useState(""); // NEW STATE
 
   const filteredItems = mockMarketplaceItems.filter((item) => {
     const matchesSearch =
@@ -120,13 +120,13 @@ const Marketplace = () => {
           </div>
         </div>
 
-        <Tabs value={sortBy} onValueChange={setSortBy}>
+        {/* <Tabs value={sortBy} onValueChange={setSortBy}>
           <TabsList>
             <TabsTrigger value="featured">Featured</TabsTrigger>
             <TabsTrigger value="popular">Popular</TabsTrigger>
             <TabsTrigger value="newest">Newest</TabsTrigger>
           </TabsList>
-        </Tabs>
+        </Tabs> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

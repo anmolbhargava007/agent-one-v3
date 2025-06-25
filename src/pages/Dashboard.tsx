@@ -72,6 +72,10 @@ const Dashboard = () => {
     }
   };
 
+  const routeFunction = () => {
+    window.open("http://15.206.121.90:3005", "_blank");
+  };
+
   return (
     <div>
       <div className="space-y-6">
@@ -82,7 +86,10 @@ const Dashboard = () => {
               Here's what's happening with your AgentOne platform.
             </p>
           </div>
-          <Button onClick={handleCreateAgent}>
+          {/* <Button onClick={handleCreateAgent}>
+            <Plus className="mr-2 h-4 w-4" /> Create New Agent
+          </Button> */}
+          <Button onClick={() => routeFunction()}>
             <Plus className="mr-2 h-4 w-4" /> Create New Agent
           </Button>
         </div>
@@ -233,10 +240,13 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center" onClick={handleCreateAgent}>
+                    <Button variant="outline" className="flex flex-col h-auto py-4 justify-center items-center" onClick={() => routeFunction()}>
                       <Bot className="h-6 w-6 mb-2" />
                       <span>Create Agent</span>
                     </Button>
+                    {/* <Button onClick={() => routeFunction()}>
+                      <Plus className="mr-2 h-4 w-4" /> Create New Agent
+                    </Button> */}
                     <Button variant="outline" onClick={handleAddModel} className="flex flex-col h-auto py-4 justify-center items-center">
                       <Database className="h-6 w-6 mb-2" />
                       <span>Add Model</span>

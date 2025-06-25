@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  agent-one-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agent-one-ui:latest
+    container_name: agent-one-ui
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  backend:
+    image: agent-one-ui:latest
+    container_name: agent-one-ui
+    ports:
+      - "5173:5173"
+    restart: unless-stopped

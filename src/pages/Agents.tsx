@@ -22,20 +22,20 @@ const Agents = () => {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<any>(null);
-  
+
   // Use real API data
   const { agents, isLoading, createAgent, updateAgent, isCreating, isUpdating } = useAgents();
   const { models } = useModels();
   const { vectors } = useVectors();
   const { integrations } = useIntegrations();
   const { guardrails } = useGuardrails();
-  
+
   // Filter agents based on search query and status
   const filteredAgents = agents.filter(agent => {
-    const matchesSearch = agent.agent_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         agent.descriptions.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = agent.agent_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      agent.descriptions.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || agent.agents_status.toLowerCase() === statusFilter.toLowerCase();
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -50,6 +50,10 @@ const Agents = () => {
     setSelectedAgent(null);
   };
 
+  const routeFunction = () => {
+    window.open("http://15.206.121.90:3005", "_blank");
+  };  
+
   if (isLoading) {
     return (
       <div className="space-y-6 animate-fade-in">
@@ -60,7 +64,10 @@ const Agents = () => {
               Create, manage, and deploy intelligent agents
             </p>
           </div>
-          <Button onClick={() => setCreateDialogOpen(true)}>
+          {/* <Button onClick={() => setCreateDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Create New Agent
+          </Button> */}
+          <Button onClick={() => routeFunction()}>
             <Plus className="mr-2 h-4 w-4" /> Create New Agent
           </Button>
         </div>
@@ -73,7 +80,7 @@ const Agents = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
@@ -83,11 +90,11 @@ const Agents = () => {
             Create, manage, and deploy intelligent agents
           </p>
         </div>
-        <Button onClick={() => setCreateDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Create New Agent
-        </Button>
+        <Button onClick={() => routeFunction()}>
+            <Plus className="mr-2 h-4 w-4" /> Create New Agent
+          </Button>
       </div>
-      
+
       <div className="flex flex-col md:flex-row justify-between gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -98,31 +105,31 @@ const Agents = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        
+
         <div className="flex gap-2">
-          <Button 
-            variant={statusFilter === "all" ? "default" : "outline"} 
+          <Button
+            variant={statusFilter === "all" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("all")}
           >
             All
           </Button>
-          <Button 
-            variant={statusFilter === "active" ? "default" : "outline"} 
+          <Button
+            variant={statusFilter === "active" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("active")}
           >
             Active
           </Button>
-          <Button 
-            variant={statusFilter === "draft" ? "default" : "outline"} 
+          <Button
+            variant={statusFilter === "draft" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("draft")}
           >
             Draft
           </Button>
-          <Button 
-            variant={statusFilter === "inactive" ? "default" : "outline"} 
+          <Button
+            variant={statusFilter === "inactive" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("inactive")}
           >
@@ -130,16 +137,16 @@ const Agents = () => {
           </Button>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredAgents.length > 0 ? (
           filteredAgents.map((agent) => (
-            <AgentCard 
-              key={agent.agent_id} 
-              agent={agent} 
-              models={models} 
-              vectors={vectors} 
-              integrations={integrations} 
+            <AgentCard
+              key={agent.agent_id}
+              agent={agent}
+              models={models}
+              vectors={vectors}
+              integrations={integrations}
               guardrails={guardrails}
               onEdit={handleEditAgent}
             />
@@ -153,13 +160,13 @@ const Agents = () => {
             <p className="text-muted-foreground mt-1 mb-4">
               No agents match your current filters. Try adjusting your search or create a new agent.
             </p>
-            <Button onClick={() => setCreateDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" /> Create New Agent
-            </Button>
+            <Button onClick={() => routeFunction()}>
+            <Plus className="mr-2 h-4 w-4" /> Create New Agent
+          </Button>
           </div>
         )}
-        
-        <Card className="border-dashed border-2 bg-transparent hover:bg-muted/50 cursor-pointer transition-colors flex flex-col justify-center items-center p-6 h-full" onClick={() => setCreateDialogOpen(true)}>
+
+        <Card className="border-dashed border-2 bg-transparent hover:bg-muted/50 cursor-pointer transition-colors flex flex-col justify-center items-center p-6 h-full" onClick={() => routeFunction()}>
           <div className="rounded-full bg-primary/10 p-4 mb-4">
             <Plus className="h-8 w-8 text-primary" />
           </div>
@@ -169,9 +176,9 @@ const Agents = () => {
           </p>
         </Card>
       </div>
-      
-      <CreateAgentDialog 
-        open={createDialogOpen} 
+
+      <CreateAgentDialog
+        open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         models={models}
         vectors={vectors}
@@ -210,14 +217,14 @@ const AgentCard = ({ agent, models, vectors, integrations, guardrails, onEdit }:
   const vector = vectors.find(v => v.id === agent.aivector_id?.toString());
   const agentIntegrations = integrations.filter(i => agent.integrator_ids?.includes(i.integrator_id));
   const agentGuardrails = guardrails.filter(g => agent.guardrail_ids?.includes(g.guardrail_id));
-  
+
   return (
     <Card className="overflow-hidden">
       <div className={cn(
         "h-2",
         agent.agents_status?.toLowerCase() === "active" ? "bg-green-500" :
-        agent.agents_status?.toLowerCase() === "draft" ? "bg-amber-500" :
-        "bg-gray-500"
+          agent.agents_status?.toLowerCase() === "draft" ? "bg-amber-500" :
+            "bg-gray-500"
       )} />
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
@@ -237,7 +244,7 @@ const AgentCard = ({ agent, models, vectors, integrations, guardrails, onEdit }:
               {model?.type || 'N/A'}
             </Badge>
           </div>
-          
+
           <div className="flex gap-2 items-center">
             <Database size={16} className="text-muted-foreground" />
             <span className="text-sm">{vector?.name || 'Unknown Vector DB'}</span>
@@ -245,12 +252,12 @@ const AgentCard = ({ agent, models, vectors, integrations, guardrails, onEdit }:
               {vector?.provider || 'N/A'}
             </Badge>
           </div>
-          
+
           <div className="flex gap-2 items-center">
             <Network size={16} className="text-muted-foreground" />
             <span className="text-sm">{agentIntegrations.length} Integration{agentIntegrations.length !== 1 ? 's' : ''}</span>
           </div>
-          
+
           <div className="flex gap-2 items-center">
             <Shield size={16} className="text-muted-foreground" />
             <span className="text-sm">{agentGuardrails.length} Guardrail{agentGuardrails.length !== 1 ? 's' : ''}</span>
@@ -331,7 +338,7 @@ const CreateAgentDialog = ({ open, onOpenChange, models, vectors, integrations, 
       integrator_ids: [],
       guardrail_ids: [],
     });
-    
+
     onOpenChange(false);
   };
 
@@ -344,19 +351,19 @@ const CreateAgentDialog = ({ open, onOpenChange, models, vectors, integrations, 
             Configure your new AI agent using the form below.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium">Agent Name</label>
-              <Input 
-                id="name" 
-                placeholder="Enter agent name" 
+              <Input
+                id="name"
+                placeholder="Enter agent name"
                 value={agentData.agent_name}
-                onChange={e => setAgentData({...agentData, agent_name: e.target.value})}
+                onChange={e => setAgentData({ ...agentData, agent_name: e.target.value })}
               />
             </div>
-            
+
             <div className="space-y-2">
               <label htmlFor="description" className="text-sm font-medium">Description</label>
               <textarea
@@ -364,17 +371,17 @@ const CreateAgentDialog = ({ open, onOpenChange, models, vectors, integrations, 
                 className="flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                 placeholder="Enter a description of what this agent does"
                 value={agentData.descriptions}
-                onChange={e => setAgentData({...agentData, descriptions: e.target.value})}
+                onChange={e => setAgentData({ ...agentData, descriptions: e.target.value })}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select Model</label>
-                <select 
+                <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={agentData.aimodel_id}
-                  onChange={e => setAgentData({...agentData, aimodel_id: e.target.value})}
+                  onChange={e => setAgentData({ ...agentData, aimodel_id: e.target.value })}
                 >
                   <option value="">Select a model</option>
                   {models.map(model => (
@@ -385,10 +392,10 @@ const CreateAgentDialog = ({ open, onOpenChange, models, vectors, integrations, 
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select Vector Database</label>
-                <select 
+                <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={agentData.aivector_id}
-                  onChange={e => setAgentData({...agentData, aivector_id: e.target.value})}
+                  onChange={e => setAgentData({ ...agentData, aivector_id: e.target.value })}
                 >
                   <option value="">Select a vector database</option>
                   {vectors.map(vector => (
@@ -399,7 +406,7 @@ const CreateAgentDialog = ({ open, onOpenChange, models, vectors, integrations, 
             </div>
           </div>
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel

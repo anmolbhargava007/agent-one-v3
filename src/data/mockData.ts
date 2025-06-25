@@ -448,7 +448,45 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     downloads: 8012,
     createdAt: '2025-06-15'
   },
-
+  {
+    id: '3',
+    name: 'Pairwise',
+    description: 'An AI tool to generate code with real-time CodeMirror integration and visual UI previews.',
+    category: 'Developer Tools',
+    provider: 'Pairwise AI',
+    pricing: 'Paid',
+    link: 'http://15.206.121.90:1625',
+    image: 'https://www.sangfor.com/sites/default/files/inline-images/5-best-ai-code-generators-in-2023.jpg',
+    featured: true,
+    downloads: 8012,
+    createdAt: '2025-06-15'
+  },
+  {
+    id: '8',
+    name: 'AutoDoc',
+    description: 'Mock data interface for contract and invoice document exploration.',
+    category: 'Finance',
+    provider: 'AutoDoc',
+    pricing: 'Free',
+    link: 'http://15.206.121.90:9696',
+    image: 'https://ossisto.com/wp-content/uploads/2025/02/What-is-AI-invoice-processing-1536x838.webp',
+    featured: false,
+    downloads: 1288,
+    createdAt: '2025-06-21'
+  },
+  {
+    id: '6',
+    name: 'Sales Advisor',
+    description: 'AI-enabled advisor dashboard with direct chat support for SBI Life.',
+    category: 'Sales',
+    provider: 'SBI Life',
+    pricing: 'Paid',
+    link: 'https://salesadvisor.nusummituat.com/',
+    image: 'https://media.licdn.com/dms/image/v2/D4D12AQFId_rNKgcr0g/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1709110541005?e=2147483647&v=beta&t=P9BBXHW7-PgnJg58H60Lzi2uUal7jxaqOhkPOPUZEV0',
+    featured: true,
+    downloads: 5400,
+    createdAt: '2025-06-20'
+  },  
 ];
 
 // Mock Deployments
