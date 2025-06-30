@@ -20,13 +20,13 @@ export const useIntegrations = () => {
   const { data: integrations = [], isLoading, error } = useQuery({
     queryKey: ['integrations'],
     queryFn: async () => {
-      const response = await apiClient.getIntegrators();
+      const response = await apiClient.getIntegrators({ is_active: true });
       if (response.success) {
         return response.data || [];
       }
       throw new Error(response.msg || 'Failed to fetch integrations');
     },
-  });
+  });  
 
   const createMutation = useMutation({
     mutationFn: async (data: IntegrationData) => {

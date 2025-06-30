@@ -462,7 +462,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     createdAt: '2025-06-15'
   },
   {
-    id: '8',
+    id: '4',
     name: 'AutoDoc',
     description: 'Mock data interface for contract and invoice document exploration.',
     category: 'Finance',
@@ -475,7 +475,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     createdAt: '2025-06-21'
   },
   {
-    id: '6',
+    id: '5',
     name: 'Sales Advisor',
     description: 'AI-enabled advisor dashboard with direct chat support for SBI Life.',
     category: 'Sales',

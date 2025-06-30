@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingBag, ExternalLink, Search, X, Filter } from "lucide-react";
 import { mockMarketplaceItems } from "@/data/mockData";
 import { MarketplaceItem } from "@/types";
+import { Link } from "react-router-dom";
 
 const Marketplace = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -183,11 +184,12 @@ const MarketplaceItemCard = ({ item }: MarketplaceItemCardProps) => {
 
       <CardFooter className="flex justify-between items-center pt-4 pb-4 border-t">
         <span className="text-sm font-medium">{item.provider}</span>
+
         <Button asChild variant="default">
-          <a href={item.link} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="mr-2 h-4 w-4" /> Open
-          </a>
-        </Button>
+  <Link to={item.link} target="_blank" rel="noopener noreferrer">
+    <ExternalLink className="mr-2 h-4 w-4" /> Open
+  </Link>
+</Button>
       </CardFooter>
     </Card>
   );

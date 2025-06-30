@@ -40,7 +40,7 @@ const Integrations = () => {
   const handleToggle = async (integration: any) => {
     const updatedIntegration = {
       ...integration,
-      is_active: !integration.is_active
+      is_connected: !integration.is_connected
     };
     updateIntegration(updatedIntegration);
   };
@@ -146,16 +146,16 @@ const Integrations = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status</span>
-                      <span className={integration.is_active ? "text-green-500" : "text-red-500"}>
-                        {integration.is_active ? "Connected" : "Disconnected"}
+                      <span className={integration.is_connected ? "text-green-500" : "text-red-500"}>
+                        {integration.is_connected ? "Connected" : "Disconnected"}
                       </span>
                     </div>
                     <Button 
-                      className={`w-full mt-4 ${integration.is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
+                      className={`w-full mt-4 ${integration.is_connected ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
                       onClick={() => handleToggle(integration)}
                       disabled={isUpdating}
                     >
-                      {isUpdating ? "Updating..." : (integration.is_active ? "Disconnect" : "Connect")}
+                      {isUpdating ? "Updating..." : (integration.is_connected ? "Disconnect" : "Connect")}
                     </Button>
                   </div>
                 </CardContent>

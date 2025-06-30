@@ -315,18 +315,20 @@ class ApiClient {
   async getIntegrators(params?: {
     integrator_id?: number;
     integrator_name?: string;
+    is_connected?: boolean;
     is_active?: boolean;
   }): Promise<ApiResponse> {
     const searchParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) {
-          searchParams.append(key, value.toString());
+          searchParams.append(key, String(value));
         }
       });
     }
     const query = searchParams.toString();
-    return this.request(`/api/v1/integrators${query ? `?${query}` : ''}`);
+    const url = `/api/v1/integrators${query ? `?${query}` : ''}`;
+    return this.request(url);
   }
 
   async updateIntegrator(data: any): Promise<ApiResponse> {
