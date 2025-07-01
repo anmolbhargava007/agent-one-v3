@@ -12,6 +12,10 @@ import {
   MarketplaceItem,
   Deployment
 } from '../types';
+import datagpt from './../../public/images/datagpt.png'
+import pairwise from './../../public/images/pairwise.png'
+import autodoc from './../../public/images/autodoc.png'
+import testament from './../../public/images/testament.png'
 
 // Mock Users
 export const mockUsers: User[] = [
@@ -430,7 +434,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     provider: 'DataGpt',
     pricing: 'Paid',
     link: 'http://15.206.121.90:82',
-    image: 'https://images.yourstory.com/cs/2/ba6b0930e8cd11edbf1c2f9de7fdeb77/DATAGPT-1698910425252.png?mode=crop&crop=faces&ar=16%3A9&format=auto&w=1920&q=75',
+    image: datagpt,
     featured: true,
     downloads: 4520,
     createdAt: '2025-06-01'
@@ -443,7 +447,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     provider: 'Testament',
     pricing: 'Paid',
     link: 'http://15.206.121.90:81',
-    image: 'https://bito.ai/wp-content/uploads/2024/01/W.png',
+    image: testament,
     featured: false,
     downloads: 8012,
     createdAt: '2025-06-15'
@@ -456,7 +460,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     provider: 'Pairwise AI',
     pricing: 'Paid',
     link: 'http://15.206.121.90:1625',
-    image: 'https://www.sangfor.com/sites/default/files/inline-images/5-best-ai-code-generators-in-2023.jpg',
+    image: pairwise,
     featured: true,
     downloads: 8012,
     createdAt: '2025-06-15'
@@ -469,7 +473,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     provider: 'AutoDoc',
     pricing: 'Free',
     link: 'http://15.206.121.90:9696',
-    image: 'https://ossisto.com/wp-content/uploads/2025/02/What-is-AI-invoice-processing-1536x838.webp',
+    image: autodoc,
     featured: false,
     downloads: 1288,
     createdAt: '2025-06-21'
@@ -482,7 +486,7 @@ export const mockMarketplaceItems: MarketplaceItem[] = [
     provider: 'SBI Life',
     pricing: 'Paid',
     link: 'https://salesadvisor.nusummituat.com/',
-    image: 'https://media.licdn.com/dms/image/v2/D4D12AQFId_rNKgcr0g/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1709110541005?e=2147483647&v=beta&t=P9BBXHW7-PgnJg58H60Lzi2uUal7jxaqOhkPOPUZEV0',
+    image: datagpt,
     featured: true,
     downloads: 5400,
     createdAt: '2025-06-20'

@@ -114,7 +114,7 @@ const Agents = () => {
           >
             All
           </Button>
-          <Button
+          {/* <Button
             variant={statusFilter === "active" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("active")}
@@ -134,7 +134,7 @@ const Agents = () => {
             onClick={() => setStatusFilter("inactive")}
           >
             Inactive
-          </Button>
+          </Button> */}
         </div>
       </div>
 

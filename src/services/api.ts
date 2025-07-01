@@ -18,7 +18,7 @@ export interface SignupRequest {
   user_email: string;
   user_pwd: string;
   user_mobile: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: string;
   is_active: boolean;
 }
 

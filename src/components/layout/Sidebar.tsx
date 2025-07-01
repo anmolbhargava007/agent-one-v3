@@ -1,16 +1,16 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  Home, 
-  Bot, 
-  Database, 
-  ShoppingBag, 
-  Network, 
-  Shield, 
-  BarChart3, 
-  Users, 
-  Settings, 
+import {
+  Home,
+  Bot,
+  Database,
+  ShoppingBag,
+  Network,
+  Shield,
+  BarChart3,
+  Users,
+  Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -22,6 +22,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import logo from './../../../public/logo.png'
+import logoWhite from './../../../public/logo-white.png'
+import { useTheme } from '@/context/ThemeContext';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -34,12 +37,12 @@ interface NavItemProps {
 const NavItem = ({ icon: Icon, label, to, active, collapsed }: NavItemProps) => {
   return (
     <Link to={to} className="w-full">
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         className={cn(
           "w-full justify-start gap-2 font-normal",
           active ? "bg-primary/10 text-primary" : "hover:bg-primary/5"
-        )} 
+        )}
       >
         <Icon size={20} />
         {!collapsed && <span>{label}</span>}
@@ -49,6 +52,7 @@ const NavItem = ({ icon: Icon, label, to, active, collapsed }: NavItemProps) => 
 };
 
 export const Sidebar = () => {
+  const { theme } = useTheme();
   const { user, logout } = useAuth();
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -81,14 +85,14 @@ export const Sidebar = () => {
         >
           <Menu size={24} />
         </Button>
-        
+
         <div className={cn(
           "fixed inset-0 bg-background/80 backdrop-blur-sm z-40",
           mobileOpen ? "block" : "hidden"
-        )} 
+        )}
           onClick={toggleMobileOpen}
         />
-        
+
         <div className={cn(
           "fixed top-0 left-0 h-full bg-card shadow-lg z-50 transition-transform duration-300 w-64",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
@@ -96,10 +100,7 @@ export const Sidebar = () => {
           <div className="h-full flex flex-col p-4">
             <div className="flex items-center justify-between mb-6">
               <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
-                <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold">A1</span>
-                </div>
-                <h1 className="text-xl font-bold">AgentOne</h1>
+                {/* <img src={logo} alt="logo" /> */}
               </Link>
               <Button variant="ghost" size="icon" onClick={toggleMobileOpen}>
                 <ChevronLeft size={20} />
@@ -134,7 +135,7 @@ export const Sidebar = () => {
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" onClick={logout}>
-                   Logout <LogOut size={18} className="text-muted-foreground" />
+                    Logout <LogOut size={18} className="text-muted-foreground" />
                   </Button>
                 </div>
               </>
@@ -146,19 +147,22 @@ export const Sidebar = () => {
   }
 
   return (
-    <div className={cn(
-      "h-screen sticky top-0 flex flex-col border-r bg-card transition-all duration-300",
-      collapsed ? "w-16" : "w-64"
-    )}>
+    <div
+      className={cn(
+        "h-screen sticky top-0 flex flex-col border-r bg-card transition-all duration-300",
+        collapsed ? "w-16" : "w-64"
+      )}
+    >
       <div className="p-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">A1</span>
-          </div>
-          {!collapsed && <h1 className="text-xl font-bold">AgentOne</h1>}
+          {collapsed ? (
+            <h1 className="text-xl font-bold">A1</h1>
+          ) : (
+            <img src={theme === "dark" ? logoWhite : logo} alt="logo" />
+          )}
         </Link>
       </div>
-      
+
       <div className="flex-1 px-3 py-4 overflow-y-auto">
         <div className="space-y-1">
           {navItems.map((item) => (
@@ -173,7 +177,7 @@ export const Sidebar = () => {
           ))}
         </div>
       </div>
-      
+
       {user && (
         <>
           <Separator className="my-2" />
@@ -206,10 +210,10 @@ export const Sidebar = () => {
           </div>
         </>
       )}
-      
-      <Button 
-        variant="ghost" 
-        size="icon" 
+
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={toggleCollapsed}
         className="mx-auto mb-4"
       >

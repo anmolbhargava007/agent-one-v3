@@ -354,9 +354,9 @@ const Models = () => {
                       {model.size} size
                     </Badge>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleConfigureModel(model)}>
+                      {/* <Button variant="outline" size="sm" onClick={() => handleConfigureModel(model)}>
                         <Settings className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
                       <Button size="sm" onClick={() => handleUseModel(model)}>
                         Use Model
                       </Button>

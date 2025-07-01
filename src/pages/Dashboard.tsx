@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,6 +30,7 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import ModelForm from "@/components/models/ModelForm";
+import { useAgents } from "@/hooks/useAgents";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -39,6 +40,8 @@ const Dashboard = () => {
   const [createAgentOpen, setCreateAgentOpen] = useState(false);
   const [isModelModalOpen, setIsModelModalOpen] = useState(false);
   const { models, isLoading: modelsLoading, createModel, updateModel, deleteModel } = useModels();
+  const { agents, isLoading, createAgent, updateAgent, isCreating, isUpdating } = useAgents();
+  console.log(agents)
 
   const pieColors = ["#9b87f5", "#7E69AB", "#6163FF", "#B085F5"];
 
@@ -210,23 +213,16 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {mockAgents.slice(0, 4).map((agent, index) => (
-                      <div key={agent.id} className="flex items-center">
-                        <div className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center mr-4",
-                          index % 2 === 0 ? "bg-primary/10" : "bg-secondary/10"
-                        )}>
-                          <Bot className={index % 2 === 0 ? "text-primary" : "text-secondary"} size={20} />
-                        </div>
-                        <div className="flex-1">
+                    {agents.length > 0 ? (
+                      agents.map((agent) => (
+                        <div key={agent.name}>
                           <h4 className="font-medium">{agent.name}</h4>
                           <p className="text-sm text-muted-foreground">{agent.status}</p>
                         </div>
-                        <Button variant="ghost" size="icon">
-                          <ArrowRight size={16} />
-                        </Button>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No agents found.</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -273,32 +269,22 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mockAgents.map((agent) => (
-                    <div key={agent.id} className="p-4 border rounded-lg flex flex-col md:flex-row gap-4 md:items-center">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Bot className="text-primary" size={24} />
+                  {agents.map((agent) => (
+                    <div key={agent.agent_id} className="flex items-center">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 bg-primary/10">
+                        <Bot className="text-primary" size={20} />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{agent.name}</h3>
-                        <p className="text-sm text-muted-foreground">{agent.description}</p>
-                        <div className="flex gap-2 mt-2">
-                          <span className={cn(
-                            "text-xs px-2 py-1 rounded-full",
-                            agent.status === 'active' ? "bg-green-100 text-green-800" :
-                              agent.status === 'draft' ? "bg-yellow-100 text-yellow-800" :
-                                "bg-gray-100 text-gray-800"
-                          )}>
-                            {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
-                          </span>
-                          <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-800">
-                            {agent.model.size.charAt(0).toUpperCase() + agent.model.size.slice(1)}
-                          </span>
-                        </div>
+                        <h4 className="font-medium">{agent.agent_name}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {agent.is_active ? "Active" : "Inactive"}
+                        </p>
                       </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button size="sm">View</Button>
-                      </div>
+                      <Link to="/agents">
+                        <Button variant="ghost" size="icon">
+                          <ArrowRight size={16} />
+                        </Button>
+                      </Link>
                     </div>
                   ))}
                 </div>

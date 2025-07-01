@@ -10,14 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/components/ui/sonner";
 import { Eye, EyeOff } from "lucide-react";
 import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
+import logo from './../../public/logo.png'
+import logoWhite from './../../public/logo-white.png'
+import { useTheme } from "@/context/ThemeContext";
 
 const Signup = () => {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     user_name: "",
     user_email: "",
     user_pwd: "",
     user_mobile: "",
-    gender: "MALE" as "MALE" | "FEMALE",
+    gender: "MALE",
     is_active: true,
   });
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -83,13 +87,9 @@ const Signup = () => {
         <ThemeSwitcher />
       </div>
       <div className="max-w-2xl w-full">
-      <div className="text-center mb-8">
+        <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <img
-              src="/images/e2a2616f-9ef6-4227-bad9-420362a39663.png"
-              alt="Agent One Logo"
-              className="h-16"
-            />
+            <img className="w-60" src={theme === "dark" ? logoWhite : logo} alt="logo" />
           </div>
           <p className="text-muted-foreground mt-2">
             AI Accelerator Platform for Enterprise Deployment
@@ -138,7 +138,7 @@ const Signup = () => {
                   disabled={isLoading}
                 />
               </div>
-
+{/* 
               <div className="space-y-2">
                 <Label htmlFor="gender">Gender</Label>
                 <Select
@@ -153,7 +153,7 @@ const Signup = () => {
                     <SelectItem value="FEMALE">Female</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
 
               <div className="space-y-2 relative">
                 <Label htmlFor="user_pwd">Password</Label>

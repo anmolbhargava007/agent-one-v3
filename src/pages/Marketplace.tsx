@@ -55,9 +55,9 @@ const Marketplace = () => {
             Browse and discover business applications
           </p>
         </div>
-        <Button>
+        {/* <Button>
           <ExternalLink className="mr-2 h-4 w-4" /> Submit Solution
-        </Button>
+        </Button> */}
       </div>
 
       <div className="bg-card p-6 rounded-lg shadow-sm border">

@@ -207,9 +207,9 @@ const Guardrails = () => {
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleEditGuardrail(guardrail)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500" onClick={() => handleDeleteGuardrail(guardrail)}>
+                      {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500" onClick={() => handleDeleteGuardrail(guardrail)}>
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
                       <Switch
                         checked={guardrail.is_active}
                         onCheckedChange={() => toggleGuardrail(guardrail)}
