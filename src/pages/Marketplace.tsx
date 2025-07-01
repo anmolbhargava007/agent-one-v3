@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingBag, ExternalLink, Search, X, Filter } from "lucide-react";
-import { mockMarketplaceItems } from "@/data/mockData";
+import { marketPlaceItems } from "@/data/mockData";
 import { MarketplaceItem } from "@/types";
 import { Link } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const Marketplace = () => {
   const [pricingFilter, setPricingFilter] = useState("all");
   const [sortBy, setSortBy] = useState(""); // NEW STATE
 
-  const filteredItems = mockMarketplaceItems.filter((item) => {
+  const filteredItems = marketPlaceItems.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -43,8 +43,8 @@ const Marketplace = () => {
     );
   }
 
-  const categories = ["all", ...new Set(mockMarketplaceItems.map((i) => i.category))];
-  const pricingOptions = ["all", ...new Set(mockMarketplaceItems.map((i) => i.pricing))];
+  const categories = ["all", ...new Set(marketPlaceItems.map((i) => i.category))];
+  const pricingOptions = ["all", ...new Set(marketPlaceItems.map((i) => i.pricing))];
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -186,10 +186,10 @@ const MarketplaceItemCard = ({ item }: MarketplaceItemCardProps) => {
         <span className="text-sm font-medium">{item.provider}</span>
 
         <Button asChild variant="default">
-  <Link to={item.link} target="_blank" rel="noopener noreferrer">
-    <ExternalLink className="mr-2 h-4 w-4" /> Open
-  </Link>
-</Button>
+          <Link to={item.link} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="mr-2 h-4 w-4" /> Open
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );

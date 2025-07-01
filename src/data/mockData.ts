@@ -425,7 +425,7 @@ export const mockAgents: Agent[] = [
 ];
 
 // Mock Marketplace Items
-export const mockMarketplaceItems: MarketplaceItem[] = [
+export const marketPlaceItems: MarketplaceItem[] = [
   {
     id: '1',
     name: 'DataGpt',
