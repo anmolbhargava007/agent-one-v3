@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { User } from '../types';
 import { toast } from '@/components/ui/sonner';
 import { apiClient, SigninRequest, SignupRequest } from '@/services/api';
@@ -17,23 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('agentone-user');
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        localStorage.removeItem('agentone-user');
-        setUser(null);
-      }
-    } else {
-      setUser(null);
-    }
-    setIsLoading(false);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -60,7 +44,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         setUser(userData);
-        localStorage.setItem('agentone-user', JSON.stringify(userData));
 
         toast.success(response.msg || `Welcome back, ${userData.name}!`);
         setIsLoading(false);
@@ -103,7 +86,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('agentone-user');
     toast.info('You have been logged out');
   };
 
